@@ -1,0 +1,30 @@
+import pandas as pd
+
+# Define chunk size based on your available memory
+chunk_size = 100000  # Adjust based on your system's memory
+
+# Define placeholder functions (replace with your actual logic)
+def process_data(chunk):
+    # Add your data processing logic here
+    # For example, you might filter rows, transform columns, etc.
+    return chunk
+
+def save_results(processed_chunk):
+    # Add your logic for saving or using the processed chunk here
+    # For example, you might append to a file, store in a database, etc.
+    # For now, we'll just print a message indicating processing
+    print("Processing a chunk...")
+    # You would typically save the processed_chunk here
+
+# Create an iterator for reading chunks
+chunk_iterator = pd.read_csv('gender_voice_dataset.csv', chunksize=chunk_size)
+
+# Process each chunk
+for chunk in chunk_iterator:
+    # Process the chunk (e.g., filter, transform, aggregate)
+    processed_chunk = process_data(chunk)
+
+    # Save processed chunk or perform operations
+    save_results(processed_chunk)
+
+print("Finished processing all chunks.")
