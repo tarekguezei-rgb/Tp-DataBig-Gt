@@ -1,0 +1,10 @@
+import pandas as pd
+df = pd.read_csv("smoke_detection_iot.csv")
+chunksize = 5000
+chunks = []
+
+for chunk in pd.read_csv("smoke_detection_iot.csv", chunksize=chunksize):
+    processed_chunk = chunk.describe()
+    chunks.append(processed_chunk)
+result = pd.concat(chunks)
+print(resul
