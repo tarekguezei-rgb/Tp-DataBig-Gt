@@ -1,0 +1,91 @@
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+
+# -------------------------------
+# 1. Connexion à MongoDB
+# -------------------------------
+client = MongoClient("mongodb://localhost:27017/")
+
+# Création / sélection de la base info
+db = client["info"]
+
+# Création / sélection de la collection produits
+produits = db["produits"]
+
+# Vider la collection si elle existe (pour refaire le TP proprement)
+produits.delete_many({})
+
+# -------------------------------
+# 2. Insertion des documents
+# -------------------------------
+
+# 1. Macbook Pro
+prod1 = {
+    "nom": "Macbook Pro",
+    "fabriquant": "Apple",
+    "prix": 11435.99,
+    "options": ["Intel Core i5", "Retina Display", "Long life battery"]
+}
+id1 = produits.insert_one(prod1).inserted_id
+
+# 2. Macbook Air
+prod2 = {
+    "nom": "Macbook Air",
+    "fabriquant": "Apple",
+    "prix": 125794.73,
+    "ultrabook": True,
+    "options": ["Intel Core i7", "SSD", "Long life battery"]
+}
+id2 = produits.insert_one(prod2).inserted_id
+
+# 3. Thinkpad X230
+prod3 = {
+    "nom": "Thinkpad X230",
+    "fabriquant": "Lenovo",
+    "prix": 114358.74,
+    "ultrabook": True,
+    "options": ["Intel Core i5", "SSD", "Long life battery"]
+}
+id3 = produits.insert_one(prod3).inserted_id
+
+print("IDs insérés :", id1, id2, id3)
+
+# -------------------------------
+# 3. Requêtes READ
+# -------------------------------
+
+print("\nTous les produits :")
+for p in produits.find():
+    print(p)
+
+print("\nPremier produit :")
+print(produits.find_one())
+
+print("\nProduit Thinkpad via son id :")
+print(produits.find_one({"_id": ObjectId(id3)}))
+
+print("\nProduits avec prix > 13723 DA :")
+for p in produits.find({"prix": {"$gt": 13723}}):
+    print(p)
+
+print("\nPremier ultrabook = true :")
+print(produits.find_one({"ultrabook": True}))
+
+print("\nPremier produit dont le nom contient 'Macbook' :")
+print(produits.find_one({"nom": {"$regex": "Macbook"}}))
+
+print("\nProduits qui commencent par Macbook :")
+for p in produits.find({"nom": {"$regex": "^Macbook"}}):
+    print(p)
+
+# -------------------------------
+# 4. Suppressions DELETE
+# -------------------------------
+
+print("\nSuppression des produits Apple :")
+result = produits.delete_many({"fabriquant": "Apple"})
+print("Nombre supprimé :", result.deleted_count)
+
+print("\nSuppression du Lenovo X230 via son id :")
+result = produits.delete_one({"_id": ObjectId(id3)})
+print("Produit supprimé :", result.deleted_count)
